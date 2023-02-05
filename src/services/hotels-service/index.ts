@@ -1,7 +1,21 @@
-import { notFoundError } from "@/errors";
+import { conflictError, notFoundError } from "@/errors";
 import hotelsRepository from "@/repositories/hotels-repository";
+import ticketRepository from "@/repositories/ticket-repository";
+import enrollmentRepository from "@/repositories/enrollment-repository";
 
-async function getHotels() {
+async function getHotels(userId: number) {
+  const enrollment = await enrollmentRepository.findWithAddressByUserId(userId);
+  if (!enrollment) {
+    throw notFoundError();
+  }
+  const ticket = await ticketRepository.findTicketByEnrollmentId(enrollment.id);
+  if (!ticket) {
+    throw notFoundError();
+  }
+  const { TicketType } = await ticketRepository.findTickeWithTypeById(ticket.id);
+  if(TicketType.isRemote || ticket.status === "RESERVED") {
+    throw conflictError("You don't have permission for this");
+  }  
   const hotels = await hotelsRepository.findHotels();
   
   if(!hotels) {
