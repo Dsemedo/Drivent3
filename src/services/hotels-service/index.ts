@@ -13,25 +13,23 @@ async function getHotels(userId: number) {
     throw notFoundError();
   }
   const { TicketType } = await ticketRepository.findTickeWithTypeById(ticket.id);
-  if(TicketType.isRemote || ticket.status === "RESERVED") {
+  if (TicketType.isRemote || ticket.status === "RESERVED") {
     throw conflictError("You don't have permission for this");
-  }  
+  }
   const hotels = await hotelsRepository.findHotels();
-  
-  if(!hotels) {
+
+  if (!hotels) {
     throw notFoundError();
   }
 
   return hotels;
 }
 
-async function getHotelById(id: number) {
-  const hotel = await hotelsRepository.findOnlyHotel(id);
-
-  if(!hotel) {
+async function getHotelById(hotelId: number) {
+  const hotel = await hotelsRepository.findOnlyHotel(hotelId);
+  if (!hotel) {
     throw notFoundError();
   }
-
   return hotel;
 }
 

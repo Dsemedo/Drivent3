@@ -23,12 +23,12 @@ export async function getAllHotels(req: AuthenticatedRequest, res: Response) {
 }
 
 export async function getHotelById(req: AuthenticatedRequest, res: Response) {
-  const { id } = req.params;
+  const { hotelId } = req.params;
   try {
-    const onlyHotel = await hotelsService.getHotelById(Number(id));
+    const onlyHotel = await hotelsService.getHotelById(Number(hotelId));
 
     return res.status(httpStatus.OK).send(onlyHotel);
   } catch (err) {
-    return res.status(httpStatus.NOT_FOUND);
+    return res.sendStatus(httpStatus.NOT_FOUND);
   }
 }
